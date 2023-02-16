@@ -2,6 +2,6 @@
 
 Steps to run the API(need MONGO_URI in .env):
 
-npm init
+npm install
 
 node index.js
