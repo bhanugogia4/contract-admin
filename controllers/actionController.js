@@ -1,11 +1,7 @@
 const mongoose = require("mongoose");
 const User = require("../models/actionModel");
-
-const catchAsync = (fn) => {
-  return (req, res, next) => {
-    fn(req, res, next).catch(next);
-  };
-};
+const Utils = require("../utils/controllerUtils");
+const catchAsync = Utils.catchAsync;
 
 exports.findAll = catchAsync(async (req, res, next) => {
   await User.find()

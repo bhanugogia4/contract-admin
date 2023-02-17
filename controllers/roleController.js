@@ -1,18 +1,18 @@
 const mongoose = require("mongoose");
 const Role = require("../models/roleModel");
+const Utils = require("../utils/controllerUtils");
+const catchAsync = Utils.catchAsync;
 
-const catchAsync = (fn) => {
-  return (req, res, next) => {
-    fn(req, res, next).catch(next);
-  };
-};
+// ----- ROLE NAME INSTEAD OF TYPE -----
 
-const findByRoleType = catchAsync(async (req, res, next) => {
-  const type = req.query.type;
+const findByRoleName = catchAsync(async (req, res, next) => {
+  const roleName = req.query.name;
 
-  await Role.findOne({ name: type }).then((doc) => {
+  await Role.findOne({ name: roleName }).then((doc) => {
     if (!doc)
-      res.status(404).send({ message: "Not found Role with type: " + type });
+      res
+        .status(404)
+        .send({ message: "Not found Role with name: " + roleName });
     else res.send(doc);
   });
 });
@@ -27,8 +27,10 @@ exports.create = catchAsync(async (req, res, next) => {
 });
 
 exports.findAll = catchAsync(async (req, res, next) => {
-  if (req.query.type) {
-    findByRoleType(req, res, next);
+  // ----- ROLE NAME INSTEAD OF TYPE -----
+
+  if (req.query.name) {
+    findByRoleName(req, res, next);
   } else {
     await Role.find()
       .then((doc) => {
@@ -62,7 +64,9 @@ exports.update = catchAsync(async (req, res, next) => {
 
   const id = mongoose.Types.ObjectId(req.params.id);
 
-  await Role.findByIdAndUpdate(id, req.body)
+  // ----- REFLECT UPDATE IN API RESPONSE -----
+
+  await Role.findByIdAndUpdate(id, req.body, { returnDocument: "after" })
     .then((data) => {
       if (!data) {
         res.status(404).send({

@@ -13,7 +13,10 @@ const ActionSchema = new Schema(
       type: String,
       required: "Description is required",
     },
-    roles: [{ type: Schema.Types.ObjectId, ref: "Role" }],
+
+    // ----- NOT STORING ROLES WHILE CREATING ACTIONS -----
+
+    // roles: [{ type: Schema.Types.ObjectId, ref: "Role" }],
   },
   { versionKey: false }
 );
